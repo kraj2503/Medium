@@ -19,14 +19,6 @@ type jwtToken = {
 
 BlogRouter.use("*", async (c, next) => {
   const jwt = c.req.header("authorization") || "";
-  if (!jwt) {
-    return c.json(
-      {
-        error: "Unauthorized",
-      },
-      401
-    );
-  }
   const token = jwt.split(" ")[1];
   try {
     const verification = (await verify(token, c.env.JWT_SECRET)) as jwtToken;
@@ -38,9 +30,9 @@ BlogRouter.use("*", async (c, next) => {
   } catch (err) {
     return c.json(
       {
-        error: "Unauthorized",
+        error: "You are not logged in",
       },
-      401
+      403
     );
   }
 });
@@ -50,7 +42,6 @@ BlogRouter.post("/", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
-  console.log(c.get("userId"));
   const body = await c.req.json();
   console.log(body);
   const blog = await prisma.blog.create({
@@ -85,16 +76,26 @@ BlogRouter.put("/", async (c) => {
 });
 
 
-BlogRouter.get("/", async (c) => {
+
+BlogRouter.get('/bulk',async (c)=>{
+  const prisma = new PrismaClient({
+      datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
+
+    const blogs = await prisma.blog.findMany();
+    return c.json({
+      blogs
+    })
+})
+BlogRouter.get("/get/ :id", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
-  const body = await c.req.json();
 try{
 
     const blog = await prisma.blog.findFirst({
       where: {
-        id: body.id,
+        id: c.req.param("id"),
       },
     });
   
@@ -109,15 +110,3 @@ catch(err){
 }
 
 });
-
-
-BlogRouter.get('/bulk',async (c)=>{
-    const prisma = new PrismaClient({
-        datasourceUrl: c.env.DATABASE_URL,
-      }).$extends(withAccelerate());
-
-      const blogs = prisma.blog.findMany({});
-      return c.json({
-        blogs
-      })
-})

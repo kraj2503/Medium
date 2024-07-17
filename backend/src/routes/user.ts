@@ -17,7 +17,7 @@ userRouter.post("/signup", async (c) => {
   }).$extends(withAccelerate());
 
   try {
-    const body = await c.req.json();
+    const body = await c.req.json(); 
     console.log("searching user");
     const findUser = await prisma.user.findUnique({
       where: {
