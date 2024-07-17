@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { sign, verify } from "hono/jwt";
 import { hashPassword, verifyPassword } from "../hashing";
-
+import { SignupInput, SigninInput } from "@kshitizraj/medium-common";
 export const userRouter = new Hono<{
   Bindings: {
     DATABASE_URL: string;
@@ -17,7 +17,16 @@ userRouter.post("/signup", async (c) => {
   }).$extends(withAccelerate());
 
   try {
-    const body = await c.req.json(); 
+    const body = await c.req.json();
+    const { success } = SignupInput.safeParse(body);
+    if (!success) {
+      return c.json(
+        {
+          Messgae: "invalid inputs",
+        },
+        411
+      );
+    }
     console.log("searching user");
     const findUser = await prisma.user.findUnique({
       where: {
@@ -27,7 +36,12 @@ userRouter.post("/signup", async (c) => {
         id: true,
       },
     });
-    if (!findUser) {
+    if(findUser){
+      return c.json({
+        Message: "user already exists"
+      },411)
+    }
+    else {
       console.log("User not found");
       const password = await hashPassword(body.password);
       console.log("1: Password hashed");
@@ -58,8 +72,17 @@ userRouter.post("/signin", async (c) => {
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
 
+  const body = await c.req.json();
+  const { success } = SigninInput.safeParse(body);
+  if (!success) {
+    return c.json(
+      {
+        Messgae: "invalid inputs",
+      },
+      411
+    );
+  }
   try {
-    const body = await c.req.json();
     // const inputPassword = await hashPassword(body.password);
     const user = await prisma.user.findUnique({
       where: {

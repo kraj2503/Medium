@@ -1,8 +1,8 @@
 import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
-import { decode, sign, verify } from "hono/jwt";
-import { hashPassword, verifyPassword } from "../hashing";
+import { verify } from "hono/jwt";
+import { createBlogInput, updateBlogInput } from "@kshitizraj/medium-common";
 
 export const BlogRouter = new Hono<{
   Bindings: {
@@ -38,12 +38,20 @@ BlogRouter.use("*", async (c, next) => {
 });
 
 BlogRouter.post("/", async (c) => {
-  //   c.get("userId");
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
   const body = await c.req.json();
-  console.log(body);
+  const { success } = createBlogInput.safeParse(body);
+  // console.log(body);
+  if (!success) {
+    return c.json(
+      {
+        Messgae: "invalid inputs",
+      },
+      411
+    );
+  }
   const blog = await prisma.blog.create({
     data: {
       title: body.title,
@@ -61,6 +69,16 @@ BlogRouter.put("/", async (c) => {
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
   const body = await c.req.json();
+  const { success } = updateBlogInput.safeParse(body);
+  // console.log(body);
+  if (!success) {
+    return c.json(
+      {
+        Messgae: "invalid inputs",
+      },
+      411
+    );
+  }
   const blog = await prisma.blog.update({
     data: {
       title: body.title,
@@ -75,38 +93,33 @@ BlogRouter.put("/", async (c) => {
   });
 });
 
-
-
-BlogRouter.get('/bulk',async (c)=>{
+BlogRouter.get("/bulk", async (c) => {
   const prisma = new PrismaClient({
-      datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate());
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
 
-    const blogs = await prisma.blog.findMany();
-    return c.json({
-      blogs
-    })
-})
+  const blogs = await prisma.blog.findMany();
+  return c.json({
+    blogs,
+  });
+});
 BlogRouter.get("/get/ :id", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
-try{
-
+  try {
     const blog = await prisma.blog.findFirst({
       where: {
         id: c.req.param("id"),
       },
     });
-  
-    return c.json({
-      blog
-    })
-}
-catch(err){
-    return c.json({
-        message:"Error while fetching blog post"
-    })
-}
 
+    return c.json({
+      blog,
+    });
+  } catch (err) {
+    return c.json({
+      message: "Error while fetching blog post",
+    });
+  }
 });
