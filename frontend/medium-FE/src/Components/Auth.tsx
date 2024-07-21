@@ -16,10 +16,12 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
   async function sendRequest() {
     try {
       const response = await axios.post(
-        `${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`,postInputs
+        `${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`,
+        postInputs
       );
-      const jwt = response.data;
-      localStorage.setItem("token", jwt);
+      const { token } = response.data;
+      console.log(token);
+      localStorage.setItem("token", "Bearer "+token);
       navigate("/blogs");
     } catch (e) {
       console.log(e);
@@ -27,6 +29,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
   }
 
   return (
+    
     <div className="h-screen flex justify-center flex-col ">
       <div className="flex justify-center">
         <div className="">
@@ -83,7 +86,8 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
             />
             <div>
               <button
-                type="button" onClick={sendRequest}
+                type="button"
+                onClick={sendRequest}
                 className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-3 me-2 mb-2 mt-5 w-full click:bg-black"
               >
                 {type === "signup" ? "Signup" : "Signin"}

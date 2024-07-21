@@ -19,15 +19,19 @@ type jwtToken = {
 
 BlogRouter.use("*", async (c, next) => {
   const jwt = c.req.header("authorization") || "";
+  // console.log("jwt", jwt);
   const token = jwt.split(" ")[1];
+  console.log(token);
   try {
     const verification = (await verify(token, c.env.JWT_SECRET)) as jwtToken;
+    console.log(verification);
     if (verification.id) {
       const userId = verification.id;
       c.set("userId", userId);
       await next();
     }
   } catch (err) {
+    console.log(err);
     return c.json(
       {
         error: "You are not logged in",
@@ -37,7 +41,7 @@ BlogRouter.use("*", async (c, next) => {
   }
 });
 
-BlogRouter.post("/", async (c) => {
+BlogRouter.post("/post", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
@@ -98,12 +102,23 @@ BlogRouter.get("/bulk", async (c) => {
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
 
-  const blogs = await prisma.blog.findMany();
+  const blogs = await prisma.blog.findMany({
+    select: {
+      title: true,
+      body: true,
+      id: true,
+      author: {
+        select: {
+          name: true,
+        },
+      },
+    },
+  });
   return c.json({
     blogs,
   });
 });
-BlogRouter.get("/get/ :id", async (c) => {
+BlogRouter.get("/:id", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
@@ -111,6 +126,16 @@ BlogRouter.get("/get/ :id", async (c) => {
     const blog = await prisma.blog.findFirst({
       where: {
         id: c.req.param("id"),
+      },
+      select: {
+        id:true,
+        title: true,
+        body: true,
+        author: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
