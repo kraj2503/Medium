@@ -1,4 +1,2 @@
-// export const BACKEND_URL="http://localhost:8787"
-export const BACKEND_URL= import.meta.env.VITE_API_URL;
-
-
+// export const BACKEND_URL="http://localhost:3000"
+export const BACKEND_URL="https://backend.kshitizraj-dev.workers.dev"
