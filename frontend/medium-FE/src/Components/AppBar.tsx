@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { Avatar } from "./Avatar";
 import { useGetName } from "../hooks";
+import Logout from "./Logout";
 
 export const AppBar = () => {
   const { authName } = useGetName();
@@ -12,7 +13,7 @@ export const AppBar = () => {
       >
         Medium
       </Link>
-      <div>
+      <div className="flex">
         <Link to={"/publish"}>
           <button
             type="button"
@@ -22,6 +23,9 @@ export const AppBar = () => {
           </button>
         </Link>
         <Avatar name={authName} type={"big"} />
+        <div className="pl-2">
+          <Logout />
+        </div>
       </div>
     </div>
   );
