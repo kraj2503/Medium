@@ -15,6 +15,7 @@ type jwtToken = {
   id: any;
 };
 
+
 userRouter.post("/signup", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
@@ -76,6 +77,68 @@ userRouter.post("/signup", async (c) => {
     await prisma.$disconnect();
   }
 });
+
+userRouter.post("/signin", async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const body = await c.req.json();
+    const { success } = SigninInput.safeParse(body);
+    if (!success) {
+      return c.json(
+        {
+          message: "Invalid inputs",
+        },
+        411
+      );
+    }
+
+    const user = await prisma.user.findUnique({
+      where: {
+        email: body.email,
+      },
+      select: {
+        id: true,
+        password: true,
+      },
+    });
+
+    if (!user) {
+      return c.json(
+        {
+          message: "User not found",
+        },
+        404
+      );
+    }
+
+    const verification = await verifyPassword(user.password, body.password);
+    if (!verification) {
+      return c.json(
+        {
+          message: "Incorrect password",
+        },
+        401
+      );
+    }
+
+    const token = await sign({ id: user.id }, c.env.JWT_SECRET);
+    return c.json({ token });
+  } catch (e: any) {
+    console.error(e);
+    return c.json(
+      {
+        message: "Internal server error",
+      },
+      500
+    );
+  } finally {
+    await prisma.$disconnect();
+  }
+});
+
 
 userRouter.get("/name", async (c) => {
   const prisma = new PrismaClient({
