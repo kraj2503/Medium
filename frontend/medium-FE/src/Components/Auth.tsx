@@ -1,5 +1,5 @@
 import { SigninInput, SignupInput } from "@kshitizraj/medium-common";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
@@ -10,8 +10,35 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
       : { email: "", password: "" };
 
   const [postInputs, setPostinput] = useState<typeof State>(State);
+  const [loading, setLoading] = useState(true)
 
   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     async function fetchData() {
+//         try {
+//             const response = await axios.get(`${BACKEND_URL}/api/v1/`, {
+//                 headers: {
+//                     "Authorization": "Bearer " + localStorage.getItem("token")
+//                 }
+//             });
+
+//             if (response.status == 200) {
+//                 setLoading(false);
+//                 navigate("/dashboard");
+//             }
+//         } catch (error) {
+//             console.error('Error fetching data:', error.response ? error.response.data : error.message);
+//             setLoading(false);
+
+//         }
+//     }
+
+//     fetchData();
+
+
+// }, []);
+
 
   async function sendRequest() {
     try {
