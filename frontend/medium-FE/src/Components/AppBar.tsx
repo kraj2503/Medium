@@ -11,7 +11,7 @@ export const AppBar = () => {
         to={"/blogs"}
         className="flex justify-center flex-col cursor-pointer"
       >
-        Medium
+        BlogIt
       </Link>
       <div className="flex">
         <Link to={"/publish"}>
