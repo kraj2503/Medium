@@ -2,12 +2,9 @@ import { SigninInput, SignupInput } from "@kshitizraj/common";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-// import { BACKEND_URL } from "../config";
+import { BACKEND_URL } from "../config";
 import { LabelInput } from "./LabelInput";
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
-
-
-
+// const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 export const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const State: SignupInput | SigninInput =
     type === "signup"
@@ -20,6 +17,18 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const navigate = useNavigate();
 
   async function sendRequest() {
+    if (!postInputs.email.trim()) {
+      setError("Email cannot be empty.");
+      setLoading(false);
+      return; 
+    }
+  
+    if (!postInputs.password.trim()) {
+      setError("Password cannot be empty.");
+      setLoading(false);
+      return; 
+    }
+  
     setLoading(true);
     try {
       const response = await axios.post(
@@ -83,7 +92,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
             <div className="flex justify-center pb-3">
 
             <div className="text-slate-400 ">
-            {BACKEND_URL} asd
+            
               {type === "signup"
                 ? "Already have an account?"
                 : "Don't have an Account?"}
