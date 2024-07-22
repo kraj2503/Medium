@@ -21,19 +21,20 @@ BlogRouter.use("*", async (c, next) => {
   const jwt = c.req.header("authorization") || "";
   // console.log("jwt", jwt);
   const token = jwt.split(" ")[1];
-  console.log(token);
+  // console.log(token);
   try {
     const verification = (await verify(token, c.env.JWT_SECRET)) as jwtToken;
-    console.log(verification);
+    // console.log(verification);
     if (verification.id) {
       const userId = verification.id;
       c.set("userId", userId);
       await next();
     }
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return c.json(
       {
+        err,
         error: "You are not logged in",
       },
       403
@@ -63,7 +64,7 @@ BlogRouter.post("/post", async (c) => {
       authorId: c.get("userId"),
     },
   });
-  console.log(blog);
+  // console.log(blog);
   return c.json({
     id: blog.id,
   });

@@ -6,7 +6,7 @@ import Logout from "./Logout";
 export const AppBar = () => {
   const { authName } = useGetName();
   return (
-    <div className="border-b flex justify-between px-10 py-1 pt-2">
+    <div className="border-b flex justify-between px-5 lg:px-10 py-1 pt-2">
       <Link
         to={"/blogs"}
         className="flex justify-center flex-col cursor-pointer"

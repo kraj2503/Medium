@@ -10,11 +10,13 @@ export const userRouter = new Hono<{
     DATABASE_URL: string;
     JWT_SECRET: string;
   };
+  Variables: {
+    userId: string;
+  };
 }>();
 type jwtToken = {
   id: any;
 };
-
 
 userRouter.post("/signup", async (c) => {
   const prisma = new PrismaClient({
@@ -139,7 +141,6 @@ userRouter.post("/signin", async (c) => {
   }
 });
 
-
 userRouter.get("/name", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
@@ -149,10 +150,10 @@ userRouter.get("/name", async (c) => {
     const jwt = c.req.header("authorization") || "";
     // console.log("jwt", jwt);
     const token = jwt.split(" ")[1];
-    console.log(token);
+    // console.log(token);
 
     const verification = (await verify(token, c.env.JWT_SECRET)) as jwtToken;
-    console.log(verification);
+    // console.log(verification);
     if (verification.id) {
       const userId = verification.id;
       const author = await prisma.user.findFirst({
@@ -164,16 +165,44 @@ userRouter.get("/name", async (c) => {
         },
       });
       return c.json({
-        author
-      })
+        author,
+      });
     }
   } catch (err) {
-    console.log(err);
+    // console.log(err);
     return c.json(
       {
+        err,
         error: "You are not logged in",
       },
       403
     );
   }
+});
+
+userRouter.use("*", async (c, next) => {
+  try {
+    const jwt = c.req.header("authorization") || "";
+    // console.log("jwt", jwt);
+    const token = jwt.split(" ")[1];
+    // console.log(token);
+    const verification = (await verify(token, c.env.JWT_SECRET)) as jwtToken;
+    // console.log("asd" + verification);
+    if (verification.id) {
+      // console.log(verification.id);
+      await next();
+    }
+  } catch (err) {
+    // console.log();
+    return c.json(
+      {
+        message: "Not Logged in!",
+      },
+      403
+    );
+  }
+});
+userRouter.get("/auth", (c) => {
+  c.status(200);
+  return c.json({});
 });
