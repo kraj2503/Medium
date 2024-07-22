@@ -6,7 +6,6 @@
   },
   "dependencies": {
     "@kshitizraj/common": "^1.2.0",
-    "@kshitizraj/medium-common": "^1.0.0",
     "@prisma/client": "^5.17.0",
     "@prisma/extension-accelerate": "^1.1.0",
     "hono": "^4.4.13"

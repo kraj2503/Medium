@@ -1,9 +1,9 @@
 import axios from "axios";
 import { AppBar } from "../Components/AppBar";
-import { BACKEND_URL } from "../config";
+// import { BACKEND_URL } from "../config";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
 export const Publish: React.FC = () => {
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");

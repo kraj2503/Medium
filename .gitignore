@@ -32,3 +32,4 @@ lerna-debug.log*
 # misc
 .DS_Store
 backend/wrangler.toml
+frontend/medium-FE/src/config.ts

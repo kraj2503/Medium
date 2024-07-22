@@ -2,14 +2,17 @@ import { SigninInput, SignupInput } from "@kshitizraj/common";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { BACKEND_URL } from "../config";
+// import { BACKEND_URL } from "../config";
 import { LabelInput } from "./LabelInput";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
+
+
 export const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const State: SignupInput | SigninInput =
     type === "signup"
       ? { email: "", name: "", password: "" ,about:""}
       : { email: "", password: "" };
-
   const [postInputs, setPostinput] = useState<typeof State>(State);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -24,7 +27,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
         postInputs
       );
       const { token } = response.data;
-      console.log(token);
+      // console.log(token);
       localStorage.setItem("token", "Bearer " + token);
       navigate("/blogs");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -68,7 +71,9 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
   }, []);
 
   return (
+    
     <div className="h-screen  flex justify-center flex-col ">
+    
       <div className="flex justify-center">
         <div className="  w-4/5 lg:w-3/5">
           <div className=" lg:px-10 ">
@@ -78,6 +83,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
             <div className="flex justify-center pb-3">
 
             <div className="text-slate-400 ">
+            {BACKEND_URL} asd
               {type === "signup"
                 ? "Already have an account?"
                 : "Don't have an Account?"}

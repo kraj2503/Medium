@@ -26,7 +26,7 @@ export const FullBlog = ({ blog }: { blog: Blog }) => {
                 <div className="text-xl font-bold pb-2">
                   {blog.author.name || "anonymous"}
                 </div>
-                <div className="text-slate-400 bg-slate-300 h-fit ">{blog.author.about||"Anonymous"}</div>
+                <div className="text-slate-400  h-fit ">{blog.author.about||"Anonymous"}</div>
               </div>
             </div>
           </div>

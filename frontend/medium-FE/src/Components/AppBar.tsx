@@ -9,7 +9,7 @@ export const AppBar = () => {
     <div className="border-b flex justify-between px-5 lg:px-10 py-1 pt-2">
       <Link
         to={"/blogs"}
-        className="flex justify-center flex-col cursor-pointer"
+        className="flex justify-center flex-col cursor-pointer text-xl text-zinc-500 font-serif font-extrabold" 
       >
         BlogIt
       </Link>
