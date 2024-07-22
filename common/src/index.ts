@@ -4,6 +4,7 @@ export const SignupInput = z.object({
   email: z.string().email(),
   password: z.string().min(8),
   name: z.string().optional(),
+  about: z.string().optional(),
 });
 
 export const SigninInput = z.object({

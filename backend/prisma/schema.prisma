@@ -18,14 +18,16 @@ model User {
   email    String  @unique
   name     String?
   password Bytes
+  about    String
   Blogs    Blog[]
 }
 
 model Blog {
-  id        String  @id @default(uuid())
+  id        String   @id @default(uuid())
   title     String
   body      String
-  published Boolean @default(false)
+  published Boolean  @default(true)
   authorId  String
-  author    User    @relation(fields: [authorId], references: [id])
+  createdAt DateTime @default(now()) @db.Date
+  author    User     @relation(fields: [authorId], references: [id])
 }

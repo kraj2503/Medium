@@ -2,7 +2,7 @@ import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { verify } from "hono/jwt";
-import { createBlogInput, updateBlogInput } from "@kshitizraj/medium-common";
+import { createBlogInput, updateBlogInput } from "@kshitizraj/common";
 
 export const BlogRouter = new Hono<{
   Bindings: {
@@ -108,6 +108,7 @@ BlogRouter.get("/bulk", async (c) => {
       title: true,
       body: true,
       id: true,
+      createdAt:true,
       author: {
         select: {
           name: true,
@@ -129,12 +130,14 @@ BlogRouter.get("/:id", async (c) => {
         id: c.req.param("id"),
       },
       select: {
-        id:true,
+        id: true,
         title: true,
         body: true,
+        createdAt:true,
         author: {
           select: {
             name: true,
+            about:true
           },
         },
       },

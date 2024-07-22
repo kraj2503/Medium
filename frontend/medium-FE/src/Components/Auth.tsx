@@ -1,4 +1,4 @@
-import { SigninInput, SignupInput } from "@kshitizraj/medium-common";
+import { SigninInput, SignupInput } from "@kshitizraj/common";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -7,7 +7,7 @@ import { LabelInput } from "./LabelInput";
 export const Auth = ({ type }: { type: "signup" | "signin" }) => {
   const State: SignupInput | SigninInput =
     type === "signup"
-      ? { email: "", name: "", password: "" }
+      ? { email: "", name: "", password: "" ,about:""}
       : { email: "", password: "" };
 
   const [postInputs, setPostinput] = useState<typeof State>(State);
@@ -99,6 +99,16 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
                   setPostinput({
                     ...postInputs,
                     name: e.target.value,
+                  });
+                }}
+              />
+              <LabelInput
+                label={"About"}
+                placeholder={"About Yourself"}
+                onChange={(e) => {
+                  setPostinput({
+                    ...postInputs,
+                    about: e.target.value,
                   });
                 }}
               />

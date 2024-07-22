@@ -1,5 +1,6 @@
 import { AppBar } from "../Components/AppBar";
 import { BlogCard } from "../Components/BlogsCard";
+import { DateFormat } from "../Components/DateFormat";
 import { Skeleton } from "../Components/Skeleton";
 import { useBlogs } from "../hooks";
 
@@ -36,7 +37,7 @@ export const Blogs = () => {
               authorName={blog.author.name || "Anonymous"}
               title={blog.title}
               content={blog.body}
-              publishedDate="20-July-2024"
+              publishedDate={DateFormat(blog.createdAt)}
             />
           ))}
         </div>

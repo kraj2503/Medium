@@ -6,8 +6,10 @@ export interface Blog {
   title: string;
   body: string;
   id: string;
+  createdAt:string;
   author: {
     name: string;
+    about:string;
   };
 }
 

@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { sign, verify } from "hono/jwt";
 import { hashPassword, verifyPassword } from "../hashing";
-import { SignupInput, SigninInput } from "@kshitizraj/medium-common";
+import { SignupInput, SigninInput } from "@kshitizraj/common";
 
 export const userRouter = new Hono<{
   Bindings: {
@@ -57,6 +57,7 @@ userRouter.post("/signup", async (c) => {
         data: {
           email: body.email,
           password: password,
+          ...(body.about && { about: body.about }),
           ...(body.name && { name: body.name }),
         },
       });
