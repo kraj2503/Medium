@@ -12,12 +12,12 @@ export const Publish: React.FC = () => {
   const handlePublish = async () => {
     if (!title.trim()) {
       alert("Title cannot be empty.");
-      return; 
+      return;
     }
-    
+
     if (!body.trim()) {
       alert("Tell us more in description box.");
-      return; 
+      return;
     }
 
     setHandleButton(true);
@@ -74,7 +74,7 @@ export const Publish: React.FC = () => {
     <div>
       <AppBar />
       <div className="flex justify-center">
-        <div className="max-w-screen-lg w-full pt-10">
+        <div className="max-w-screen-lg w-full pt-10 ">
           <input
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -85,13 +85,14 @@ export const Publish: React.FC = () => {
         </div>
       </div>
       <TextEditor value={body} onChange={(e) => setBody(e.target.value)} />
-      <button
-        onClick={handlePublish}
-        className="bg-blue-600 px-4 py-1 ml-44 mt-3 rounded-2xl text-white active:bg-blue-900"
-        disabled={PublishButton}
-      >
-        {buttonText}
-      </button>
+      <div className="flex justify-end mt-5 mr-[270px]">
+        <div className="bg-blue-600 px-4  py-1  mt-3 rounded-2xl text-white active:bg-blue-900">
+        
+          <button onClick={handlePublish} disabled={PublishButton}>
+            {buttonText}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
